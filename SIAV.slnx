@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SIAV.API/SIAV.API.csproj" />
+  <Project Path="SIAV.Application/SIAV.Application.csproj" />
+  <Project Path="SIAV.Domain/SIAV.Domain.csproj" />
+  <Project Path="SIAV.Infraestructure/SIAV.Infraestructure.csproj" />
+</Solution>
