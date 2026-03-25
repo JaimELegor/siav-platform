@@ -10,4 +10,4 @@ The system implements a layered architecture using technologies such as C#, ASP.
 
 ## Modelo de Dominio
 
-![Diagrama de entidades](DOCS/domain-model.png)
+![Diagrama de entidades](DOCS/UML.png)
