@@ -11,6 +11,8 @@ public interface IApplicationDbContext
     DbSet<Curso> Cursos { get; }
     DbSet<Grupo> Grupos { get; }
     DbSet<Inscripcion> Inscripciones { get; }
+    DbSet<CursoPorAlumnoResultado> CursosPorAlumno { get; }
+    Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade Database { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

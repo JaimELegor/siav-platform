@@ -4,6 +4,7 @@ using System.Text;
 using SIAV.Infraestructure;
 using SIAV.Application.Interfaces;
 using SIAV.Application.Services;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 
 // CORS para Angular
 builder.Services.AddCors(options =>
@@ -38,18 +39,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+            RoleClaimType = "rol"
         };
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<ICursoService, CursoService>();
+builder.Services.AddScoped<IGrupoService, GrupoService>();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.Title = "SIAV API";
+        options.WithHttpBearerAuthentication(bearer =>
+        {
+            bearer.Token = "tu-token-aqui";
+        });
+    });
 }
 
 app.UseCors("AllowAngular");

@@ -12,6 +12,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<UsuarioInstitucion> UsuariosInstitucion => Set<UsuarioInstitucion>();
     public DbSet<Curso> Cursos => Set<Curso>();
     public DbSet<Grupo> Grupos => Set<Grupo>();
+    public DbSet<CursoPorAlumnoResultado> CursosPorAlumno => Set<CursoPorAlumnoResultado>();
     public DbSet<Inscripcion> Inscripciones => Set<Inscripcion>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -64,5 +65,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 Slug = "demo",
             }
         );
+
+        modelBuilder.Entity<CursoPorAlumnoResultado>().HasNoKey();
     }
 }

@@ -35,4 +35,13 @@ public class AuthController(IAuthService authService) : ControllerBase
             return Unauthorized(new { mensaje = ex.Message });
         }
     }
+
+    [HttpGet("debug-claims")]
+    public IActionResult DebugClaims()
+    {
+        var authHeader = Request.Headers["Authorization"].ToString();
+        var claims = User.Claims.Select(c => new { c.Type, c.Value });
+        return Ok(new { authHeader, claims });
+    }
+
 }
