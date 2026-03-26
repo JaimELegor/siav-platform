@@ -12,5 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SIAV.Domain\SIAV.Domain.csproj" />
+    <ProjectReference Include="..\SIAV.Application\SIAV.Application.csproj" />
   </ItemGroup>
 </Project>

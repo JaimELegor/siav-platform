@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using SIAV.Domain.Entities;
+using SIAV.Application.Interfaces; 
 
 namespace SIAV.Infraestructure.Persistance;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options)
+    : DbContext(options), IApplicationDbContext
 {
     public DbSet<Institucion> Instituciones => Set<Institucion>();
     public DbSet<Usuario> Usuarios => Set<Usuario>();
