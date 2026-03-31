@@ -11,4 +11,5 @@ public interface IGrupoService
     Task<bool> EliminarAsync(int id, int institucionId);
     Task InscribirAlumnoAsync(int alumnoMembresiaId, int grupoId);
     Task<List<CursoPorAlumnoResultado>> ObtenerCursosPorAlumnoAsync(int alumnoMembresiaId); // ← cambiado
+    Task ReasignarDocenteAsync(int grupoId, int nuevoDocenteId, int institucionId);
 }

@@ -47,6 +47,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ICursoService, CursoService>();
 builder.Services.AddScoped<IGrupoService, GrupoService>();
+builder.Services.AddScoped<IDocenteService, DocenteService>();
+builder.Services.AddScoped<IHorarioService, HorarioService>();
 
 var app = builder.Build();
 

@@ -78,4 +78,26 @@ public class GrupoService(IApplicationDbContext db) : IGrupoService
             .FromSqlRaw("EXEC ObtenerCursosPorAlumno {0}", alumnoMembresiaId)
             .ToListAsync();
     }
+
+    public async Task ReasignarDocenteAsync(int grupoId, int nuevoDocenteId, int institucionId)
+    {
+        var grupo = await db.Grupos
+            .FirstOrDefaultAsync(g =>
+                g.Id == grupoId &&
+                g.Curso.InstitucionId == institucionId)
+            ?? throw new InvalidOperationException("Grupo no encontrado.");
+
+        var docenteExiste = await db.UsuariosInstitucion
+            .AnyAsync(ui =>
+                ui.Id == nuevoDocenteId &&
+                ui.InstitucionId == institucionId &&
+                ui.Rol == RolInstitucion.Docente &&
+                ui.Activo);
+
+        if (!docenteExiste)
+            throw new InvalidOperationException("Docente no encontrado en esta institución.");
+
+        grupo.DocenteId = nuevoDocenteId;
+        await db.SaveChangesAsync();
+    }
 }

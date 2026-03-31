@@ -14,6 +14,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Grupo> Grupos => Set<Grupo>();
     public DbSet<CursoPorAlumnoResultado> CursosPorAlumno => Set<CursoPorAlumnoResultado>();
     public DbSet<Inscripcion> Inscripciones => Set<Inscripcion>();
+    public DbSet<DisponibilidadDocente> DisponibilidadesDocente => Set<DisponibilidadDocente>();
+    public DbSet<Horario> Horarios => Set<Horario>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

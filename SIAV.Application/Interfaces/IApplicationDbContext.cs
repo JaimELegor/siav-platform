@@ -12,6 +12,8 @@ public interface IApplicationDbContext
     DbSet<Grupo> Grupos { get; }
     DbSet<Inscripcion> Inscripciones { get; }
     DbSet<CursoPorAlumnoResultado> CursosPorAlumno { get; }
+    DbSet<DisponibilidadDocente> DisponibilidadesDocente { get; }
+    public DbSet<Horario> Horarios { get; }
     Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade Database { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIAV.Application.DTOs;
+using SIAV.Application.DTOs.Docentes;
 using SIAV.Application.Interfaces;
 using System.Security.Claims;
 using SIAV.Domain.Entities;
@@ -66,4 +67,20 @@ public class GruposController(IGrupoService grupoService) : ControllerBase
     [Authorize(Roles = "Alumno")]
     public async Task<IActionResult> MisCursos() =>
         Ok(await grupoService.ObtenerCursosPorAlumnoAsync(MembresiaId));
+
+    [HttpPut("{grupoId}/reasignar-docente")]
+    [Authorize(Roles = "Coordinador")]
+    public async Task<IActionResult> ReasignarDocente(
+        int grupoId, [FromBody] ReasignarDocenteDto dto)
+    {
+        try
+        {
+            await grupoService.ReasignarDocenteAsync(grupoId, dto.NuevoDocenteId, InstitucionId);
+            return Ok(new { mensaje = "Docente reasignado exitosamente." });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
+    }
 }
