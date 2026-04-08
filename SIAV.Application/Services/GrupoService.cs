@@ -100,4 +100,49 @@ public class GrupoService(IApplicationDbContext db) : IGrupoService
         grupo.DocenteId = nuevoDocenteId;
         await db.SaveChangesAsync();
     }
+
+    public async Task<GrupoDto?> ActualizarAsync(int id, ActualizarGrupoDto dto, int institucionId)
+    {
+        var grupo = await db.Grupos
+            .FirstOrDefaultAsync(g => g.Id == id && g.Curso.InstitucionId == institucionId);
+
+        if (grupo is null) return null;
+
+        // Validar que el docente pertenece a la institución
+        var docenteExiste = await db.UsuariosInstitucion
+            .AnyAsync(ui =>
+                ui.Id == dto.DocenteId &&
+                ui.InstitucionId == institucionId &&
+                ui.Rol == RolInstitucion.Docente &&
+                ui.Activo);
+
+        if (!docenteExiste)
+            throw new InvalidOperationException("Docente no encontrado en esta institución.");
+
+        // Parsear el estado
+        if (!Enum.TryParse<EstadoGrupo>(dto.Estado, ignoreCase: true, out var nuevoEstado))
+            throw new InvalidOperationException($"Estado inválido: {dto.Estado}. Valores válidos: Abierto, EnCurso, Cerrado.");
+
+        grupo.Nombre      = dto.Nombre;
+        grupo.DocenteId   = dto.DocenteId;
+        grupo.FechaInicio = dto.FechaInicio;
+        grupo.FechaFin    = dto.FechaFin;
+        grupo.LimiteAlumnos = dto.LimiteAlumnos;
+        grupo.Estado      = nuevoEstado;
+
+        await db.SaveChangesAsync();
+
+        // Recargar con navegaciones para el DTO
+        var g = await db.Grupos
+            .Include(x => x.Curso)
+            .Include(x => x.Docente).ThenInclude(x => x.Usuario)
+            .FirstAsync(x => x.Id == grupo.Id);
+
+        return new GrupoDto(
+            g.Id, g.CursoId, g.Curso.Nombre,
+            g.DocenteId, g.Docente.Usuario.Nombre,
+            g.Nombre, g.FechaInicio, g.FechaFin, g.LimiteAlumnos,
+            g.Inscripciones.Count(i => i.Estado == EstadoInscripcion.Activa),
+            g.Estado.ToString());
+    }
 }

@@ -10,6 +10,7 @@ public interface IGrupoService
     Task<GrupoDto> CrearAsync(CrearGrupoDto dto, int institucionId);
     Task<bool> EliminarAsync(int id, int institucionId);
     Task InscribirAlumnoAsync(int alumnoMembresiaId, int grupoId);
-    Task<List<CursoPorAlumnoResultado>> ObtenerCursosPorAlumnoAsync(int alumnoMembresiaId); // ← cambiado
+    Task<List<CursoPorAlumnoResultado>> ObtenerCursosPorAlumnoAsync(int alumnoMembresiaId); 
     Task ReasignarDocenteAsync(int grupoId, int nuevoDocenteId, int institucionId);
+    Task<GrupoDto?> ActualizarAsync(int id, ActualizarGrupoDto dto, int institucionId);
 }

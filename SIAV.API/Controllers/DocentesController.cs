@@ -69,4 +69,13 @@ public class DocentesController(IDocenteService docenteService) : ControllerBase
             .ObtenerDisponiblesAsync(InstitucionId, (DiaSemana)dia, horaInicio, horaFin);
         return Ok(docentes);
     }
+
+    [HttpGet("docentes-estado")]
+    [Authorize(Roles = "Coordinador")]
+    public async Task<IActionResult> ObtenerEstadosAsync()
+    {
+        var estados = await docenteService
+            .ObtenerEstadosAsync(InstitucionId);
+        return Ok(estados);
+    }
 }

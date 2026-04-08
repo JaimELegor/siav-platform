@@ -83,4 +83,18 @@ public class GruposController(IGrupoService grupoService) : ControllerBase
             return BadRequest(new { mensaje = ex.Message });
         }
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] ActualizarGrupoDto dto)
+    {
+        try
+        {
+            var grupo = await grupoService.ActualizarAsync(id, dto, InstitucionId);
+            return grupo is null ? NotFound() : Ok(grupo);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
+    }
 }

@@ -110,4 +110,52 @@ public class DocenteService(IApplicationDbContext db) : IDocenteService
             .Select(ui => new DocenteDisponibleDto(ui.Id, ui.Usuario.Nombre))
             .ToListAsync();
     }
+
+    public async Task<List<DocenteEstadoDto>> ObtenerEstadosAsync(
+        int institucionId, EstadoDocenteDto? filtroEstado = null)
+    {
+        // 1. Traer todos los docentes activos e inactivos de la institución
+        var docentes = await db.UsuariosInstitucion
+            .Where(ui =>
+                ui.InstitucionId == institucionId &&
+                ui.Rol == RolInstitucion.Docente)
+            .Include(ui => ui.Usuario)
+            .ToListAsync();
+
+        // 2. Obtener los IDs de docentes activos que tienen clases en curso
+        var docenteIdsConClases = await db.Grupos
+            .Where(g =>
+                g.Estado == EstadoGrupo.EnCurso &&
+                docentes.Select(d => d.Id).Contains(g.DocenteId))
+            .Select(g => g.DocenteId)
+            .Distinct()
+            .ToHashSetAsync();
+
+        // 3. Proyectar cada docente a su DTO con estado calculado
+        var resultado = docentes.Select(docente =>
+        {
+            EstadoDocenteDto estado;
+
+            if (!docente.Activo)
+                estado = EstadoDocenteDto.Baja;
+            else
+                estado = docenteIdsConClases.Contains(docente.Id)
+                    ? EstadoDocenteDto.ActivoConClases
+                    : EstadoDocenteDto.ActivoSinClases;
+
+            return new DocenteEstadoDto(
+                docente.Id,
+                docente.Usuario.Nombre,
+                docente.Usuario.Email,
+                estado);
+        });
+
+        // 4. Aplicar filtro opcional
+        if (filtroEstado.HasValue)
+            resultado = resultado.Where(d => d.Estado == filtroEstado.Value);
+
+        return resultado
+            .OrderBy(d => d.Nombre)
+            .ToList();
+    }
 }

@@ -5,6 +5,7 @@ using SIAV.Infraestructure;
 using SIAV.Application.Interfaces;
 using SIAV.Application.Services;
 using Scalar.AspNetCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,12 +44,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             RoleClaimType = "rol"
         };
     });
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters
+            .Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ICursoService, CursoService>();
 builder.Services.AddScoped<IGrupoService, GrupoService>();
 builder.Services.AddScoped<IDocenteService, DocenteService>();
 builder.Services.AddScoped<IHorarioService, HorarioService>();
+builder.Services.AddScoped<IEstudianteService, EstudianteService>();
 
 var app = builder.Build();
 

@@ -38,3 +38,12 @@ public record CursoPorAlumnoDto(
     DateTime FechaFin,
     string Estado
 );
+
+public record ActualizarGrupoDto(
+    string Nombre,
+    int DocenteId,
+    DateTime FechaInicio,
+    DateTime FechaFin,
+    int LimiteAlumnos,
+    string Estado   // "Abierto", "EnCurso", "Cerrado"
+);

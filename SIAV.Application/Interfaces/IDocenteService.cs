@@ -6,6 +6,7 @@ namespace SIAV.Application.Interfaces;
 public interface IDocenteService
 {
     // Disponibilidad declarada
+    
     Task<DisponibilidadDto> AgregarDisponibilidadAsync(int docenteId, int institucionId, CrearDisponibilidadDto dto);
     Task<List<DisponibilidadDto>> ObtenerDisponibilidadAsync(int docenteId, int institucionId);
     Task<bool> EliminarDisponibilidadAsync(int disponibilidadId, int institucionId);
@@ -16,4 +17,5 @@ public interface IDocenteService
         DiaSemana dia,
         TimeOnly horaInicio,
         TimeOnly horaFin);
+    Task<List<DocenteEstadoDto>> ObtenerEstadosAsync(int institucionId, EstadoDocenteDto? filtroEstado = null);
 }
